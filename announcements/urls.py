@@ -1,15 +1,19 @@
 from django.urls import include, path
-from rest_framework.permissions import AllowAny
-
+from rest_framework.routers import DefaultRouter
 
 from announcements.apps import AnnouncementsConfig
-from users.views import UserCreateAPIView, UserProfileViewSet, EmailConfirmAPIView, PasswordResetAPIView, PasswordResetConfirmAPIView
+from announcements.views import AnnouncementViewSet, ReviewACreateAPIView, ReviewListAPIView, ReviewDestroyAPIView
 
 app_name = AnnouncementsConfig.name
 
 
+router = DefaultRouter()
+router.register(r"announcement", AnnouncementViewSet, basename="announcement")
 
 urlpatterns = [
-    # path("email-confirm/<str:token>", EmailConfirmAPIView.as_view(permission_classes=(AllowAny,)), name="email_confirm"),
-    # path("reset_password_confirm/<uid>/<token>/", PasswordResetConfirmAPIView.as_view(), name="reset_password_confirm")
-]
+    path("review_create/", ReviewACreateAPIView.as_view(), name="review_create"),
+    path("review_list/", ReviewListAPIView.as_view(), name="review_list"),
+    path(
+        "review/<int:pk>/delete", ReviewDestroyAPIView.as_view(), name="review_delete"
+    ),
+] + router.urls

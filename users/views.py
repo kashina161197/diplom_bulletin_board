@@ -2,7 +2,7 @@
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from users.models import CustomsUser
-from users.serializers import UserSerializer
+from users.serializers import ProfileUserSerializer, UserSerializer, ProfileOwnerAdSerializer
 from rest_framework.response import Response
 import secrets
 from django.core.mail import send_mail
@@ -17,7 +17,7 @@ class UserCreateAPIView(CreateAPIView):
 
     """Контроллер для создание пользователя"""
 
-    serializer_class = UserSerializer
+    serializer_class = ProfileUserSerializer
     queryset = CustomsUser.objects.all()
     permission_classes = (AllowAny,)
 
@@ -111,11 +111,16 @@ class PasswordResetConfirmAPIView(APIView):
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
+    """Контроллер просмотра профиля пользователя"""
 
-    """Контроллер просмотра профиля пользотеля"""
+    queryset = CustomsUser .objects.all()
 
-    queryset = CustomsUser.objects.all()
-    serializer_class = UserSerializer
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return UserSerializer
+        if self.request.user.id == self.get_object().id:
+            return ProfileUserSerializer
+        return ProfileOwnerAdSerializer
 
     def get_queryset(self):
         return self.queryset.filter(id=self.request.user.id)
