@@ -1,12 +1,6 @@
 from rest_framework import serializers
 from .models import CustomsUser, Announcement, Review
-
-
-class AnnouncementSerializer(serializers.ModelSerializer):
-    """Сериализатор для объявления"""
-    class Meta:
-        model = Announcement
-        fields = ('id', 'title', 'price', 'description', 'image', 'created_at', 'owner')
+from .paginators import ADSPagination
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -14,3 +8,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ('id', 'text', 'rating', 'created_at', 'announcement', 'owner')
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    """Сериализатор для объявления"""
+
+    announcement_reviews = ReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = ('id', 'title', 'price', 'description', 'image', 'created_at', 'owner', 'announcement_reviews')
+

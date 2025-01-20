@@ -1,7 +1,10 @@
 
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
+
+from announcements.paginators import ADSPagination
 from users.models import CustomsUser
+from users.permissions import IsOwner, IsModer
 from users.serializers import ProfileUserSerializer, UserSerializer, ProfileOwnerAdSerializer
 from rest_framework.response import Response
 import secrets
@@ -44,13 +47,13 @@ class EmailConfirmAPIView(APIView):
 
     """Представление для подтверждения email-адреса пользователя"""
 
-    def get(self, token):
+    def get(self, request, token):
         """Подтверждение email-адреса пользователя"""
 
         user = get_object_or_404(CustomsUser, token=token)
         user.is_active = True
         user.save(update_fields=["is_active"])
-        return Response({"message": "Ваша учетная запись подтверждена!"})
+        return Response({"message": "Ваша учетная запись подтверждена!"}, status=status.HTTP_200_OK)
 
 
 class PasswordResetAPIView(APIView):
@@ -114,6 +117,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     """Контроллер просмотра профиля пользователя"""
 
     queryset = CustomsUser .objects.all()
+    pagination_class = ADSPagination
+
+    def get_permissions(self):
+        if self.action in ("update", "destroy"):
+            self.permission_classes = (IsOwner | IsModer,)
+        return super().get_permissions()
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
@@ -123,7 +132,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         return ProfileOwnerAdSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(id=self.request.user.id)
+        return CustomsUser.objects.all()
 
     def perform_update(self, serializer):
         serializer.save()
+
