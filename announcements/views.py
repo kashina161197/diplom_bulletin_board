@@ -4,7 +4,7 @@ from users.permissions import IsModer, IsOwner
 from announcements.filters import AnnouncementFilter
 from announcements.models import Announcement, Review
 from announcements.paginators import ADSPagination
-from announcements.serializers import AnnouncementSerializer, ReviewSerializer
+from announcements.serializers import AnnouncementSerializer, ReviewSerializer, AnnouncementRetrieveSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
@@ -13,7 +13,6 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
 
     queryset = Announcement.objects.all()
     pagination_class = ADSPagination
-    serializer_class = AnnouncementSerializer
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -28,6 +27,12 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         announcement = serializer.save()
         announcement.owner = self.request.user
         announcement.save()
+
+    def get_serializer_class(self):
+        """Выбор сериализатора в зависимости от действия."""
+        if self.action == 'retrieve':
+            return AnnouncementRetrieveSerializer
+        return AnnouncementSerializer
 
     def get_permissions(self):
         if self.action == "list":
@@ -61,7 +66,7 @@ class ReviewListPIView(generics.ListAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     pagination_class = ADSPagination
-    permission_classes = (IsAuthenticated | IsModer,)
+    permission_classes = [AllowAny]
 
 
 class ReviewUpdatePIView(generics.UpdateAPIView):
@@ -69,7 +74,7 @@ class ReviewUpdatePIView(generics.UpdateAPIView):
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (IsOwner | IsModer)
+    permission_classes = [IsAuthenticated, IsOwner | IsModer]
 
 
 class ReviewDestroyAPIView(generics.DestroyAPIView):
@@ -77,4 +82,4 @@ class ReviewDestroyAPIView(generics.DestroyAPIView):
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (IsOwner | IsModer)
+    permission_classes = [IsAuthenticated, IsOwner | IsModer]

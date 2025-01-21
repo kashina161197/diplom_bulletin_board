@@ -6,11 +6,19 @@ from announcements.serializers import AnnouncementSerializer, ReviewSerializer
 from .models import CustomsUser
 
 
+class CreateUserSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания профиля"""
+
+    class Meta:
+        model = CustomsUser
+        fields = "__all__"
+
+
 class ProfileUserSerializer(serializers.ModelSerializer):
     """Сериализатор для владельца профиля"""
 
     announcements = AnnouncementSerializer(many=True, read_only=True)
-    author_reviews = serializers.SerializerMethodField()
+    author_reviews = ReviewSerializer(many=True, read_only=True)
     received_reviews = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
 
@@ -72,10 +80,3 @@ class ProfileOwnerAdSerializer(serializers.ModelSerializer):
             average_rating = total_rating / reviews.count()
             return round(average_rating, 2)
         return 0
-
-
-class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор для админа"""
-    class Meta:
-        model = CustomsUser
-        fields = "__all__"

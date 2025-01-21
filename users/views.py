@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 
 from announcements.paginators import ADSPagination
 from users.models import CustomsUser
-from users.permissions import IsOwner, IsModer
-from users.serializers import ProfileUserSerializer, UserSerializer, ProfileOwnerAdSerializer
+from users.permissions import IsModer, IsUser
+from users.serializers import ProfileUserSerializer, ProfileOwnerAdSerializer, CreateUserSerializer
 from rest_framework.response import Response
 import secrets
 from django.core.mail import send_mail
@@ -20,9 +20,9 @@ class UserCreateAPIView(CreateAPIView):
 
     """Контроллер для создание пользователя"""
 
-    serializer_class = ProfileUserSerializer
+    serializer_class = CreateUserSerializer
     queryset = CustomsUser.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         """Создание пользователя и активация УЗ"""
@@ -93,18 +93,14 @@ class PasswordResetConfirmAPIView(APIView):
 
     permission_classes = [AllowAny]
 
-    def post(self, request, uid):
+    def post(self, request, uid, token):
         password = request.data.get("password")
         if not password:
             return Response({"error": "Требуется ввести пароль."}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            uid = uid
-            user = CustomsUser.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, ObjectDoesNotExist):
-            user = None
+        user = get_object_or_404(CustomsUser , pk=uid)
 
-        if user is not None and user.token:
+        if user is not None and user.token == token:
             user.set_password(password)
             user.token = secrets.token_hex(16)
             user.save()
@@ -120,13 +116,15 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     pagination_class = ADSPagination
 
     def get_permissions(self):
-        if self.action in ("update", "destroy"):
-            self.permission_classes = (IsOwner | IsModer,)
+        if self.action == "retrieve":
+            self.permission_classes = [AllowAny]
+        if self.action in ("update", "partial_update", "destroy"):
+            self.permission_classes = (IsUser | IsModer,)
         return super().get_permissions()
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
-            return UserSerializer
+            return ProfileUserSerializer
         if self.request.user.id == self.get_object().id:
             return ProfileUserSerializer
         return ProfileOwnerAdSerializer
