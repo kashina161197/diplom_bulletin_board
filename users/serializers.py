@@ -3,6 +3,7 @@ from rest_framework import serializers
 from announcements.models import Review
 from announcements.paginators import ADSPagination
 from announcements.serializers import AnnouncementSerializer, ReviewSerializer
+
 from .models import CustomsUser
 
 
@@ -24,8 +25,19 @@ class ProfileUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomsUser
-        fields = ("id", "email", "password", "first_name", "last_name", "phone_number", "avatar", "announcements",
-                  "author_reviews", "received_reviews", "average_rating")
+        fields = (
+            "id",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "avatar",
+            "announcements",
+            "author_reviews",
+            "received_reviews",
+            "average_rating",
+        )
 
     def get_received_reviews(self, obj):
         """Получаем оставленные отзывы"""
@@ -33,7 +45,9 @@ class ProfileUserSerializer(serializers.ModelSerializer):
         reviews = Review.objects.filter(announcement__in=announcements)
 
         paginator = ADSPagination()
-        paginated_reviews = paginator.paginate_queryset(reviews, self.context['request'])
+        paginated_reviews = paginator.paginate_queryset(
+            reviews, self.context["request"]
+        )
 
         return ReviewSerializer(paginated_reviews, many=True).data
 
@@ -58,16 +72,24 @@ class ProfileOwnerAdSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomsUser
-        fields = ("first_name", "phone_number", "avatar", "announcements", "reviews", "overall_rating")
+        fields = (
+            "first_name",
+            "phone_number",
+            "avatar",
+            "announcements",
+            "reviews",
+            "overall_rating",
+        )
 
     def get_reviews(self, obj):
         """Получаем оставленные отзывы"""
         announcements = obj.announcements.all()
-        reviews = Review.objects.filter(
-            announcement__in=announcements)
+        reviews = Review.objects.filter(announcement__in=announcements)
 
         paginator = ADSPagination()
-        paginated_reviews = paginator.paginate_queryset(reviews, self.context['request'])
+        paginated_reviews = paginator.paginate_queryset(
+            reviews, self.context["request"]
+        )
         return ReviewSerializer(paginated_reviews, many=True).data
 
     def get_overall_rating(self, obj):

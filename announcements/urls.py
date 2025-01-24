@@ -1,9 +1,10 @@
-from django.urls import include, path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from announcements.apps import AnnouncementsConfig
-from announcements.views import AnnouncementViewSet, ReviewACreateAPIView, ReviewDestroyAPIView, \
-    ReviewUpdatePIView, ReviewListPIView
+from announcements.views import (AnnouncementViewSet, ReviewACreateAPIView,
+                                 ReviewDestroyAPIView, ReviewListPIView,
+                                 ReviewUpdatePIView)
 
 app_name = AnnouncementsConfig.name
 

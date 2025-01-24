@@ -1,10 +1,9 @@
-﻿import pytest
+import pytest
 from django.urls import reverse
 from rest_framework import status
 
 from announcements.models import Announcement
-from users.tests.conftest import (admin_fixture, api_client, user_fixture,
-                                  user_is_owner_fixture)
+from users.tests.conftest import admin_fixture, api_client, user_fixture, user_is_owner_fixture
 
 
 @pytest.mark.django_db
@@ -43,10 +42,14 @@ def test_announcement_list(announcement_fixture, api_client, user_fixture):
 
 
 @pytest.mark.django_db
-def test_announcement_retrieve(api_client, user_is_owner_fixture, user_fixture, announcement_fixture, admin_fixture):
+def test_announcement_retrieve(
+    api_client, user_is_owner_fixture, user_fixture, announcement_fixture, admin_fixture
+):
     """Тестирование просмотра одного объявления"""
 
-    url = reverse("announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk})
+    url = reverse(
+        "announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk}
+    )
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -65,10 +68,14 @@ def test_announcement_retrieve(api_client, user_is_owner_fixture, user_fixture, 
 
 
 @pytest.mark.django_db
-def test_announcement_update(api_client, user_is_owner_fixture, user_fixture, announcement_fixture):
+def test_announcement_update(
+    api_client, user_is_owner_fixture, user_fixture, announcement_fixture
+):
     """Тестирование изменения информация в одном объявлении"""
 
-    url = reverse("announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk})
+    url = reverse(
+        "announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk}
+    )
     data = {
         "title": "test_title_updated",
         "price": 200,
@@ -100,10 +107,14 @@ def test_announcement_update(api_client, user_is_owner_fixture, user_fixture, an
 
 
 @pytest.mark.django_db
-def test_announcement_delete(api_client, user_is_owner_fixture, user_fixture, announcement_fixture):
+def test_announcement_delete(
+    api_client, user_is_owner_fixture, user_fixture, announcement_fixture
+):
     """Тестирование удаления объявления"""
 
-    url = reverse("announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk})
+    url = reverse(
+        "announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk}
+    )
     response = api_client.delete(url)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED

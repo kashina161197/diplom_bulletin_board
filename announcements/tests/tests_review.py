@@ -1,10 +1,9 @@
-﻿import pytest
+import pytest
 from django.urls import reverse
 from rest_framework import status
 
 from announcements.models import Review
-from users.tests.conftest import (api_client, user_fixture,
-                                  user_is_owner_fixture)
+from users.tests.conftest import api_client, user_fixture, user_is_owner_fixture
 
 
 @pytest.mark.django_db
@@ -59,11 +58,7 @@ def test_review_update(api_client, review_fixture, user_is_owner_fixture, user_f
 
     url = reverse("announcements:review_update", kwargs={"pk": review_fixture.pk})
 
-    data = {
-        "text": "test text updated",
-        "rating": 4,
-        "announcement": 1
-    }
+    data = {"text": "test text updated", "rating": 4, "announcement": 2}
 
     data_1 = {
         "text": "test text updated",

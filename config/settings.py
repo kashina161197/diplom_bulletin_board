@@ -27,7 +27,6 @@ DEBUG = True if os.getenv("DEBUG") == "True" else False
 ALLOWED_HOSTS = ["*"]
 
 
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -40,7 +39,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_yasg",
     "users",
-    "announcements"
+    "announcements",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +50,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -94,7 +94,6 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
-
 
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -1,7 +1,8 @@
 import pytest
+from django.core import mail
 from django.urls import reverse
 from rest_framework import status
-from django.core import mail
+
 from users.models import CustomsUser
 
 
@@ -12,12 +13,17 @@ def test_user_create(client):
     """
 
     url = reverse("users:register")
-    data = {"email": "testnew@test.ru", "password": "Qwerty123", "first_name": "Test", "last_name": "Test"}
+    data = {
+        "email": "testnew@test.ru",
+        "password": "Qwerty123",
+        "first_name": "Test",
+        "last_name": "Test",
+    }
     response = client.post(url, data)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert CustomsUser .objects.count() == 1
-    user = CustomsUser .objects.first()
+    assert CustomsUser.objects.count() == 1
+    user = CustomsUser.objects.first()
     assert user.email == data["email"]
     assert user.is_active is False
     assert user.check_password(data["password"])
@@ -119,7 +125,10 @@ def test_user_reset_password(user_fixture, api_client):
     response_1 = api_client.post(url, data={})
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()["message"] == "Ссылка для сброса пароля отправлена на ваш email."
+    assert (
+        response.json()["message"]
+        == "Ссылка для сброса пароля отправлена на ваш email."
+    )
     assert response_1.status_code == status.HTTP_400_BAD_REQUEST
 
 
@@ -132,7 +141,10 @@ def test_user_reset_password_confirm(user_fixture, api_client):
     user_fixture.token = "valid_token"
     user_fixture.save()
 
-    url = reverse("users:reset_password_confirm", kwargs={"uid": user_fixture.id, "token": user_fixture.token})
+    url = reverse(
+        "users:reset_password_confirm",
+        kwargs={"uid": user_fixture.id, "token": user_fixture.token},
+    )
 
     data = {
         "password": "NewPassword123",

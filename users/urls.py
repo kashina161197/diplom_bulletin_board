@@ -5,7 +5,9 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 from users.apps import UsersConfig
-from users.views import UserCreateAPIView, UserProfileViewSet, EmailConfirmAPIView, PasswordResetAPIView, PasswordResetConfirmAPIView
+from users.views import (EmailConfirmAPIView, PasswordResetAPIView,
+                         PasswordResetConfirmAPIView, UserCreateAPIView,
+                         UserProfileViewSet)
 
 app_name = UsersConfig.name
 
@@ -14,7 +16,11 @@ router = DefaultRouter()
 router.register(r"profile", UserProfileViewSet, basename="user-profile")
 
 urlpatterns = [
-    path("email-confirm/<str:token>", EmailConfirmAPIView.as_view(permission_classes=(AllowAny,)), name="email_confirm"),
+    path(
+        "email-confirm/<str:token>",
+        EmailConfirmAPIView.as_view(permission_classes=(AllowAny,)),
+        name="email_confirm",
+    ),
     path("", include(router.urls)),
     path("register/", UserCreateAPIView.as_view(), name="register"),
     path(
@@ -28,5 +34,9 @@ urlpatterns = [
         name="token_refresh",
     ),
     path("reset_password/", PasswordResetAPIView.as_view(), name="reset_password"),
-    path("reset_password_confirm/<uid>/<token>/", PasswordResetConfirmAPIView.as_view(), name="reset_password_confirm")
+    path(
+        "reset_password_confirm/<uid>/<token>/",
+        PasswordResetConfirmAPIView.as_view(),
+        name="reset_password_confirm",
+    ),
 ]

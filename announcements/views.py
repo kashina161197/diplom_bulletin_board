@@ -1,13 +1,16 @@
-from rest_framework import generics, viewsets, filters
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from users.permissions import IsModer, IsOwner
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import filters, generics, viewsets
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
 from announcements.filters import AnnouncementFilter
 from announcements.models import Announcement, Review
 from announcements.paginators import ADSPagination
-from announcements.serializers import AnnouncementSerializer, ReviewSerializer, AnnouncementRetrieveSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.utils.decorators import method_decorator
-from drf_yasg.utils import swagger_auto_schema
+from announcements.serializers import (AnnouncementRetrieveSerializer,
+                                       AnnouncementSerializer,
+                                       ReviewSerializer)
+from users.permissions import IsModer, IsOwner
 
 
 @method_decorator(
@@ -57,7 +60,11 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         filters.OrderingFilter,
     ]
     filterset_class = AnnouncementFilter
-    filterset_fields = ("owner", "title", "created_at",)
+    filterset_fields = (
+        "owner",
+        "title",
+        "created_at",
+    )
     search_fields = ("title",)
     ordering_fields = ("created_at",)
 
@@ -68,7 +75,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Выбор сериализатора в зависимости от действия."""
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return AnnouncementRetrieveSerializer
         return AnnouncementSerializer
 

@@ -6,8 +6,14 @@ from users.models import CustomsUser
 class Announcement(models.Model):
     """Модель объявления"""
 
-    title = models.CharField(max_length=50, verbose_name="Название товара", help_text="Укажите название товара")
-    price = models.PositiveIntegerField(verbose_name="Цена товара", help_text="Укажите стоимость товара")
+    title = models.CharField(
+        max_length=50,
+        verbose_name="Название товара",
+        help_text="Укажите название товара",
+    )
+    price = models.PositiveIntegerField(
+        verbose_name="Цена товара", help_text="Укажите стоимость товара"
+    )
     description = models.TextField(null=True, blank=True, verbose_name="Описание")
     image = models.ImageField(upload_to="announcement/photo", null=True)
     owner = models.ForeignKey(
@@ -16,9 +22,11 @@ class Announcement(models.Model):
         blank=True,
         null=True,
         on_delete=models.CASCADE,
-        related_name="announcements"
+        related_name="announcements",
     )
-    created_at = models.DateField(auto_now_add=True, verbose_name="Дата и время создания объявления")
+    created_at = models.DateField(
+        auto_now_add=True, verbose_name="Дата и время создания объявления"
+    )
 
     def __str__(self):
         return f"№ {self.pk} - {self.title}"
@@ -33,7 +41,8 @@ class Review(models.Model):
     """Модель отзыва"""
 
     text = models.TextField(
-        verbose_name="Текст отзыва", help_text="Расскажите о товаре и о ваших впечатлениях"
+        verbose_name="Текст отзыва",
+        help_text="Расскажите о товаре и о ваших впечатлениях",
     )
     owner = models.ForeignKey(
         CustomsUser,

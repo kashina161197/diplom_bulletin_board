@@ -11,14 +11,8 @@ class CustomsUser(AbstractUser):
     )
 
     username = None
-    first_name = models.CharField(
-        max_length=30,
-        help_text="Укажите ваше имя"
-    )
-    last_name = models.CharField(
-        max_length=30,
-        help_text="Укажите вашу фамилию"
-    )
+    first_name = models.CharField(max_length=30, help_text="Укажите ваше имя")
+    last_name = models.CharField(max_length=30, help_text="Укажите вашу фамилию")
     email = models.EmailField(unique=True, help_text="Укажите вашу почту")
     avatar = models.ImageField(
         upload_to="photo/avatar",
@@ -27,11 +21,10 @@ class CustomsUser(AbstractUser):
         verbose_name="Аватар",
         help_text="Загрузите аватар",
     )
-    phone_number = models.CharField(max_length=15, blank=True, null=True, help_text="Укажите ваш номер телефона")
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default="user")
+    phone_number = models.CharField(
+        max_length=15, blank=True, null=True, help_text="Укажите ваш номер телефона"
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="user")
     token = models.CharField(
         max_length=100, verbose_name="Токен пользователя", blank=True, null=True
     )

@@ -10,7 +10,9 @@ class ForbiddenWordValidator:
 
     __slots__ = ("announcement_title", "announcement_description", "review_text")
 
-    def __init__(self, announcement_title=None, announcement_description=None, review_text=None):
+    def __init__(
+        self, announcement_title=None, announcement_description=None, review_text=None
+    ):
         self.announcement_title = announcement_title
         self.announcement_description = announcement_description
         self.review_text = review_text
@@ -21,12 +23,17 @@ class ForbiddenWordValidator:
         announcement_description_field = value.get(self.announcement_description)
         review_text_field = value.get(self.review_text)
 
-        with open(Path(__file__).parent.joinpath("forbidden_words.txt"), "r", encoding="utf-8") as file:
+        with open(
+            Path(__file__).parent.joinpath("forbidden_words.txt"), "r", encoding="utf-8"
+        ) as file:
             forbidden_words = file.read().splitlines()
 
         for word in forbidden_words:
             try:
-                if word in announcement_title_field.lower() or word in announcement_description_field.lower():
+                if (
+                    word in announcement_title_field.lower()
+                    or word in announcement_description_field.lower()
+                ):
                     raise ValidationError("Имеется запрещенное слово в тексте")
             except TypeError:
                 pass
@@ -55,7 +62,9 @@ class RepeatAnnouncementValidator(ForbiddenWordValidator):
         description_field = value.get(self.announcement_description)
         price_field = value.get(self.price)
 
-        if Announcement.objects.filter(title=title_field, description=description_field, price=price_field).exists():
+        if Announcement.objects.filter(
+            title=title_field, description=description_field, price=price_field
+        ).exists():
             raise ValidationError("Такое объявление уже существует")
 
 
