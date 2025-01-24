@@ -1,7 +1,7 @@
-
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
-
+from django.utils.decorators import method_decorator
 from announcements.paginators import ADSPagination
 from users.models import CustomsUser
 from users.permissions import IsModer, IsUser
@@ -16,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from config.settings import EMAIL_HOST_USER
 
 
+@method_decorator(name="create", decorator=swagger_auto_schema(operation_description="Представление создания пользователя"))
 class UserCreateAPIView(CreateAPIView):
 
     """Контроллер для создание пользователя"""
@@ -109,6 +110,10 @@ class PasswordResetConfirmAPIView(APIView):
             return Response({"error": "Ссылка для сброса пароля недействительна."}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(name="retrieve", decorator=swagger_auto_schema(operation_description="Представление просмотра конкретного пользователя"))
+@method_decorator(name="update", decorator=swagger_auto_schema(operation_description="Представление изменения пользователя"))
+@method_decorator(name="partial_update", decorator=swagger_auto_schema(operation_description="Представление частичного изменения пользователя"))
+@method_decorator(name="destroy", decorator=swagger_auto_schema(operation_description="Представление удаления пользователя"))
 class UserProfileViewSet(viewsets.ModelViewSet):
     """Контроллер просмотра профиля пользователя"""
 

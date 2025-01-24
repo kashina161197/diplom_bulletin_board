@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 from django.urls import reverse
 from rest_framework import status
 
@@ -9,9 +9,7 @@ from users.tests.conftest import (admin_fixture, api_client, user_fixture,
 
 @pytest.mark.django_db
 def test_announcement_create(api_client, user_fixture):
-    """
-    Тестирование создания нового объявления
-    """
+    """Тестирование создание нового объявления"""
 
     url = reverse("announcements:announcement-list")
     data = {"title": "title new", "description": "description new", "price": 100}
@@ -30,9 +28,7 @@ def test_announcement_create(api_client, user_fixture):
 
 @pytest.mark.django_db
 def test_announcement_list(announcement_fixture, api_client, user_fixture):
-    """
-    Тестирование просмотра списка объявлений
-    """
+    """Тестирование просмотра списка объявлений"""
 
     url = reverse("announcements:announcement-list")
     response = api_client.get(url)
@@ -48,9 +44,7 @@ def test_announcement_list(announcement_fixture, api_client, user_fixture):
 
 @pytest.mark.django_db
 def test_announcement_retrieve(api_client, user_is_owner_fixture, user_fixture, announcement_fixture, admin_fixture):
-    """
-    Тестирование просмотра одного объявления
-    """
+    """Тестирование просмотра одного объявления"""
 
     url = reverse("announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk})
     response = api_client.get(url)
@@ -72,9 +66,7 @@ def test_announcement_retrieve(api_client, user_is_owner_fixture, user_fixture, 
 
 @pytest.mark.django_db
 def test_announcement_update(api_client, user_is_owner_fixture, user_fixture, announcement_fixture):
-    """
-    Тестирование изменения информации об объявлении
-    """
+    """Тестирование изменения информация в одном объявлении"""
 
     url = reverse("announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk})
     data = {
@@ -109,9 +101,7 @@ def test_announcement_update(api_client, user_is_owner_fixture, user_fixture, an
 
 @pytest.mark.django_db
 def test_announcement_delete(api_client, user_is_owner_fixture, user_fixture, announcement_fixture):
-    """
-    Тестирование удаления объявления
-    """
+    """Тестирование удаления объявления"""
 
     url = reverse("announcements:announcement-detail", kwargs={"pk": announcement_fixture.pk})
     response = api_client.delete(url)

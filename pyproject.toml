@@ -24,6 +24,8 @@ stripe = "^11.4.1"
 pillow = "^11.0.0"
 pytest = "^8.3.4"
 pytest-django = "^4.9.0"
+pytest-cov = "^6.0.0"
+
 
 
 [build-system]
