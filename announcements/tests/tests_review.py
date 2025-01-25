@@ -51,14 +51,14 @@ def test_review_list(api_client, review_fixture, user_is_owner_fixture, user_fix
 
 
 @pytest.mark.django_db
-def test_review_update(api_client, review_fixture, user_is_owner_fixture, user_fixture):
+def test_review_update(api_client, review_fixture, user_is_owner_fixture, user_fixture, announcement_fixture):
     """
     Тест изменения отзыва
     """
 
     url = reverse("announcements:review_update", kwargs={"pk": review_fixture.pk})
 
-    data = {"text": "test text updated", "rating": 4, "announcement": 2}
+    data = {"text": "test text updated", "rating": 4, "announcement": announcement_fixture.pk}
 
     data_1 = {
         "text": "test text updated",
@@ -71,11 +71,13 @@ def test_review_update(api_client, review_fixture, user_is_owner_fixture, user_f
     # Проверка с аутентификацией, но без прав владельца
     api_client.force_authenticate(user_fixture)
     response = api_client.put(url, data)
+    print(response.data)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
     # Проверка с аутентификацией и правами владельца
     api_client.force_authenticate(user_is_owner_fixture)
     response = api_client.put(url, data)
+    print(response.data)
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["text"] == "test text updated"
     assert response.json()["rating"] == 4
